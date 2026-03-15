@@ -1,34 +1,368 @@
-body{
-font-family: Arial;
-background:#f2f2f2;
-text-align:center;
+* {
+  box-sizing: border-box;
 }
 
-#slide{
-background:white;
-padding:40px;
-margin:20px auto;
-width:700px;
-border-radius:10px;
+body {
+  margin: 0;
+  font-family: Arial, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  background: #0f172a;
+  color: #ffffff;
 }
 
-ul{
-text-align:left;
-display:inline-block;
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 22px;
+  background: #020617;
+  border-bottom: 1px solid #334155;
 }
 
-img{
-width:200px;
-margin-top:20px;
+.top-bar h1 {
+  margin: 0;
+  font-size: 22px;
 }
 
-button{
-padding:10px 20px;
-margin:10px;
-font-size:16px;
-cursor:pointer;
+.status {
+  display: flex;
+  gap: 12px;
+  font-size: 14px;
+  color: #cbd5e1;
 }
 
-.actions{
-margin-top:20px;
+.screen {
+  display: none;
+  padding: 24px;
+}
+
+.screen.active {
+  display: block;
+}
+
+/* 프롤로그 / 게임오버 공통 */
+.story-scene {
+  padding: 0;
+  background-color: #000;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: background 0.8s ease;
+}
+
+.story-backdrop {
+  width: 100%;
+  min-height: calc(100vh - 78px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 24px;
+}
+
+.dialog-box {
+  width: min(700px, 90%);
+  background: rgba(10, 15, 28, 0.9);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 16px;
+  padding: 18px 18px 16px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+}
+
+.speaker-name {
+  display: inline-block;
+  margin-bottom: 10px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+#gameover-speaker.professor {
+  background: #7c3aed;
+}
+
+#gameover-speaker.teammate {
+  background: #475569;
+}
+
+#gameover-speaker.me {
+  background: #2563eb;
+}
+
+#story-text,
+#gameover-text {
+  min-height: 90px;
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.65;
+  color: #f8fafc;
+  white-space: pre-line;
+  word-break: keep-all;
+}
+
+#story-text {
+  transition: opacity 0.25s ease;
+}
+
+#story-text.fade-out {
+  opacity: 0;
+}
+
+#story-next-btn,
+#gameover-next-btn {
+  min-width: 100px;
+  margin-top: 14px;
+}
+
+/* 정상 PPT / 게임 */
+#memory-screen.active,
+#game-screen.active {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.slide-frame {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.slide {
+  width: min(720px, 88vw);
+  min-height: 420px;
+  background: #ffffff;
+  color: #111827;
+  border-radius: 16px;
+  padding: 28px;
+  margin: 0 auto;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* 표지 */
+.cover {
+  min-height: 364px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
+.cover-title {
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.cover-team {
+  font-size: 24px;
+  margin-top: 20px;
+  color: #374151;
+}
+
+.cover-date {
+  font-size: 18px;
+  margin-top: 20px;
+  color: #6b7280;
+}
+
+/* 본문 */
+.slide-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 24px;
+}
+
+.slide-body {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+
+.bullet-list {
+  flex: 1;
+  min-width: 240px;
+  margin: 0;
+  padding-left: 26px;
+  font-size: 20px;
+  line-height: 1.9;
+}
+
+.image-box {
+  width: 240px;
+  min-height: 190px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px dashed #cbd5e1;
+  border-radius: 12px;
+  background: #f8fafc;
+  padding: 12px;
+}
+
+.image-box img {
+  max-width: 100%;
+  max-height: 170px;
+  object-fit: contain;
+}
+
+.nav-buttons,
+.action-buttons {
+  margin-top: 18px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+button {
+  padding: 12px 20px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 700;
+  transition: opacity 0.15s ease;
+}
+
+button:hover {
+  opacity: 0.92;
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.primary-btn {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.danger-btn {
+  background: #dc2626;
+  color: #ffffff;
+}
+
+.memory-text {
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 16px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+#memory-confirm {
+  display: inline-block;
+  margin: 0 auto;
+}
+
+/* 클리어 오버레이 */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.hidden {
+  display: none;
+}
+
+.result-box {
+  width: min(520px, 92%);
+  background: #020617;
+  border: 1px solid #334155;
+  border-radius: 15px;
+  padding: 36px;
+  text-align: center;
+}
+
+.result-box h2 {
+  margin-top: 0;
+  font-size: 30px;
+}
+
+.result-box p {
+  white-space: pre-line;
+  font-size: 18px;
+  line-height: 1.7;
+  color: #e2e8f0;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .top-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .story-backdrop {
+    padding: 16px;
+    min-height: calc(100vh - 95px);
+  }
+
+  .dialog-box {
+    width: min(92%, 620px);
+    padding: 16px 16px 14px;
+    border-radius: 14px;
+  }
+
+  .speaker-name {
+    font-size: 13px;
+    padding: 6px 10px;
+  }
+
+  #story-text,
+  #gameover-text {
+    font-size: 19px;
+    min-height: 110px;
+  }
+
+  .slide {
+    width: min(92vw, 680px);
+    min-height: 380px;
+    padding: 22px;
+  }
+
+  .cover-title {
+    font-size: 28px;
+  }
+
+  .cover-team {
+    font-size: 21px;
+  }
+
+  .cover-date {
+    font-size: 16px;
+  }
+
+  .slide-title {
+    font-size: 24px;
+  }
+
+  .bullet-list {
+    font-size: 18px;
+    min-width: 100%;
+  }
+
+  .image-box {
+    width: 100%;
+    min-height: 170px;
+  }
+
+  .image-box img {
+    max-height: 150px;
+  }
+
+  .memory-text {
+    font-size: 16px;
+  }
 }

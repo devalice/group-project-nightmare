@@ -1,41 +1,83 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Group Project Nightmare</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
+<header class="top-bar">
+    <h1>🎮 Group Project Nightmare</h1>
+    <div class="status">
+        <span id="stage-label"></span>
+        <span id="slide-label"></span>
+    </div>
+</header>
 
-<h2 id="stage">Stage 1 / 16</h2>
+<!-- 프롤로그 -->
+<section id="story-screen" class="screen active story-scene">
+    <div class="story-backdrop">
+        <div class="dialog-box">
+            <div class="speaker-name">나</div>
+            <p id="story-text"></p>
+            <button id="story-next-btn" class="primary-btn">다음</button>
+        </div>
+    </div>
+</section>
 
-<div id="slide">
+<!-- 정상 PPT 확인 -->
+<section id="memory-screen" class="screen">
+    <div class="slide-frame">
+        <div class="slide" id="memory-slide"></div>
+    </div>
 
-    <h1 id="title"></h1>
-    <h2 id="team"></h2>
-    <p id="date"></p>
+    <div class="nav-buttons">
+        <button id="memory-prev">← 이전</button>
+        <button id="memory-next">다음 →</button>
+    </div>
 
-    <ul id="bullets"></ul>
+    <p class="memory-text">어제 밤엔 분명 이 상태였다. 잘 기억해두자.</p>
+    <button id="memory-confirm" class="primary-btn">확인 완료</button>
+</section>
 
-    <img id="image"/>
+<!-- 게임 화면 -->
+<section id="game-screen" class="screen">
+    <div class="slide-frame">
+        <div class="slide" id="game-slide"></div>
+    </div>
 
-</div>
+    <div class="nav-buttons">
+        <button id="prev">← 이전</button>
+        <button id="next">다음 →</button>
+    </div>
 
-<div class="nav">
-    <button onclick="prevSlide()">← 이전</button>
-    <span id="slideIndex">Slide 1 / 3</span>
-    <button onclick="nextSlide()">다음 →</button>
-</div>
+    <div class="action-buttons">
+        <button id="detect" class="danger-btn">이상현상 발견</button>
+        <button id="safe" class="primary-btn">문제 없음</button>
+    </div>
+</section>
 
-<div class="actions">
-    <button onclick="detect()">이상현상 발견</button>
-    <button onclick="submit()">문제 없음</button>
-</div>
+<!-- 게임오버 화면 -->
+<section id="gameover-screen" class="screen story-scene">
+    <div class="story-backdrop">
+        <div class="dialog-box">
+            <div class="speaker-name" id="gameover-speaker">교수님</div>
+            <p id="gameover-text"></p>
+            <button id="gameover-next-btn" class="primary-btn">다음</button>
+        </div>
+    </div>
+</section>
 
-<p id="message"></p>
+<!-- 클리어 오버레이 -->
+<section id="result-overlay" class="overlay hidden">
+    <div class="result-box">
+        <h2 id="result-title"></h2>
+        <p id="result-message"></p>
+        <button id="result-btn" class="primary-btn">처음으로</button>
+    </div>
+</section>
 
 <script src="app.js"></script>
-
 </body>
 </html>
