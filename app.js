@@ -1,18 +1,34 @@
 const totalStages = 16;
-const anomalyStageCount = 8; // Stage 2~16 중 anomaly 개수
+const anomalyStageCount = 8;
 
 const storyLines = [
-  "좋아. PPT 최종 점검을 해볼까.",
+  "후. 드디어 다 했네. 마지막으로 PPT 최종 점검을 해볼까.",
   "내용도 괜찮고 이미지도 문제 없고 구성도 완벽해.",
   "이 정도면 내일 발표는 무난하게 끝나겠지.",
   "가볍게 한 잔만 하고 자야겠다.",
   "......",
   "뭐야. 벌써 발표 5분 전이잖아?",
   "마지막으로 PPT나 다시 확인해볼까.",
-  "...어?",
-  "잠깐만...\n뭐냐 이거? 어제랑 다른데?",
+  "...어? 잠깐만.\n뭐냐 이거? 어제랑 다른데?",
   "설마 내가 술 취해서 건드린 건가...?",
   "x됐다.\n이상한 부분부터 빨리 찾아야 해!"
+];
+
+const restartStoryLines = [
+  "어? 뭐지? 방금 무슨 꿈을 꾼 것 같은데...\n뭐... 어쨌든 마지막으로 PPT 최종 점검을 해볼까.",
+  "내용도 괜찮고 이미지도 문제 없고 구성도 완벽해.",
+  "이 정도면 내일 발표는 무난하게 끝나겠지.",
+  "가볍게 한 잔만 하고 자야겠다.",
+  "......",
+  "뭐야. 벌써 발표 5분 전이잖아?",
+  "마지막으로 PPT나 다시 확인해볼까.",
+  "...어? 잠깐만.\n뭐냐 이거? 어제랑 다른데?",
+  "설마 내가 술 취해서 건드린 건가...?",
+  "x됐다.\n이상한 부분부터 빨리 찾아야 해!"
+];
+
+const stageClearLines = [
+  "휴우 이건 됐고.\n다른 부분도 확인해보자."
 ];
 
 const gameOverLines = [
@@ -29,7 +45,7 @@ const gameOverLines = [
   {
     speaker: "나",
     speakerClass: "me",
-    text: "...꿈인가?"
+    text: "...휴학할까?"
   }
 ];
 
@@ -42,7 +58,7 @@ const clearLines = [
   {
     speaker: "팀원",
     speakerClass: "teammate",
-    text: "와, 해냈다! 진짜 살았다!"
+    text: "발표 잘하더라? 덕분에 우리 A+ 받을듯."
   },
   {
     speaker: "나",
@@ -62,12 +78,17 @@ const normalSlides = [
     dateColor: "#6b7280",
     teamSize: "24px",
     teamOffsetY: "0px",
-    dateSize: "18px"
+    teamAnimatedClass: "",
+    titleAnimatedClass: "",
+    dateSize: "18px",
+    dateOffsetX: "0px",
+    dateAnimatedClass: ""
   },
   {
     type: "content",
     title: "문제 정의",
     titleColor: "#111827",
+    titleAnimatedClass: "",
     bullets: [
       "일정 관리 앱 사용률 감소",
       "협업 기능 부족",
@@ -75,6 +96,8 @@ const normalSlides = [
     ],
     bulletColors: ["#111827", "#111827", "#111827"],
     bulletWeights: ["400", "400", "400"],
+    bulletOffsetsY: ["0px", "0px", "0px"],
+    bulletAnimatedClasses: ["", "", ""],
     image: "assets/graph.png",
     imageRotate: "0deg",
     imageScale: "1"
@@ -83,6 +106,7 @@ const normalSlides = [
     type: "content",
     title: "해결 방안",
     titleColor: "#111827",
+    titleAnimatedClass: "",
     bullets: [
       "AI 일정 추천",
       "팀 일정 공유",
@@ -90,6 +114,8 @@ const normalSlides = [
     ],
     bulletColors: ["#111827", "#111827", "#111827"],
     bulletWeights: ["400", "400", "400"],
+    bulletOffsetsY: ["0px", "0px", "0px"],
+    bulletAnimatedClasses: ["", "", ""],
     image: "assets/service.png",
     imageRotate: "0deg",
     imageScale: "1"
@@ -97,51 +123,28 @@ const normalSlides = [
 ];
 
 const anomalyTypes = {
-  team_goat(slides) {
-    slides[0].team = "Team GOAT";
-  },
-  cover_title_red(slides) {
-    slides[0].titleColor = "#dc2626";
-  },
-  cover_team_blue(slides) {
-    slides[0].teamColor = "#2563eb";
-  },
-  cover_date_green(slides) {
-    slides[0].dateColor = "#16a34a";
-  },
-  cover_team_big(slides) {
-    slides[0].teamSize = "40px";
-  },
-  cover_date_weird(slides) {
-    slides[0].date = "3025.06.10";
-  },
-  problem_title_red(slides) {
-    slides[1].titleColor = "#dc2626";
-  },
-  problem_bullet_red(slides) {
-    slides[1].bulletColors = ["#111827", "#dc2626", "#111827"];
-  },
-  problem_bullet_bold(slides) {
-    slides[1].bulletWeights = ["400", "700", "400"];
-  },
-  problem_bullet_typo(slides) {
-    slides[1].bullets[2] = "복잡한 U1";
-  },
-  graph_cat(slides) {
-    slides[1].image = "assets/cat.png";
-  },
-  graph_dog(slides) {
-    slides[1].image = "assets/dog.png";
-  },
-  solution_title_red(slides) {
-    slides[2].titleColor = "#dc2626";
-  },
-  solution_bullet_blue(slides) {
-    slides[2].bulletColors = ["#2563eb", "#111827", "#111827"];
-  },
-  service_dog(slides) {
-    slides[2].image = "assets/dog.png";
-  }
+  team_goat(slides) { slides[0].team = "Team I AM THE GOAT"; },
+  cover_title_red(slides) { slides[0].titleColor = "#dc2626"; },
+  cover_team_blue(slides) { slides[0].teamColor = "#2563eb"; },
+  cover_date_green(slides) { slides[0].dateColor = "#16a34a"; },
+  cover_team_big(slides) { slides[0].teamSize = "40px"; },
+  cover_date_weird(slides) { slides[0].date = "3025.06.10"; },
+  cover_team_down(slides) { slides[0].teamOffsetY = "24px"; },
+  cover_date_right(slides) { slides[0].dateOffsetX = "18px"; },
+  cover_team_drifting(slides) { slides[0].teamAnimatedClass = "drift-down"; },
+  problem_title_red(slides) { slides[1].titleColor = "#dc2626"; },
+  problem_title_float(slides) { slides[1].titleAnimatedClass = "title-float"; },
+  problem_bullet_red(slides) { slides[1].bulletColors = ["#111827", "#dc2626", "#111827"]; },
+  problem_bullet_bold(slides) { slides[1].bulletWeights = ["400", "700", "400"]; },
+  problem_bullet_typo(slides) { slides[1].bullets[2] = "복잡한 U1"; },
+  problem_bullet_shift(slides) { slides[1].bulletOffsetsY = ["0px", "16px", "0px"]; },
+  problem_bullet_wiggle(slides) { slides[1].bulletAnimatedClasses = ["", "wiggle-text", ""]; },
+  graph_cat(slides) { slides[1].image = "assets/cat.png"; },
+  graph_dog(slides) { slides[1].image = "assets/dog.png"; },
+  solution_title_red(slides) { slides[2].titleColor = "#dc2626"; },
+  solution_title_float(slides) { slides[2].titleAnimatedClass = "title-float"; },
+  solution_bullet_blue(slides) { slides[2].bulletColors = ["#2563eb", "#111827", "#111827"]; },
+  service_goat(slides) { slides[2].image = "assets/goat.png"; }
 };
 
 function shuffle(array) {
@@ -158,29 +161,22 @@ function createStages() {
   const stagePool = [];
 
   for (const anomalyId of anomalyIds) {
-    stagePool.push({
-      hasAnomaly: true,
-      anomalyId
-    });
+    stagePool.push({ hasAnomaly: true, anomalyId });
   }
 
   const normalCount = (totalStages - 1) - anomalyStageCount;
   for (let i = 0; i < normalCount; i += 1) {
-    stagePool.push({
-      hasAnomaly: false,
-      anomalyId: null
-    });
+    stagePool.push({ hasAnomaly: false, anomalyId: null });
   }
 
-  const shuffledPool = shuffle(stagePool);
-
   return [
-    { hasAnomaly: false, anomalyId: null }, // Stage 1 고정 정상
-    ...shuffledPool
+    { hasAnomaly: false, anomalyId: null },
+    ...shuffle(stagePool)
   ];
 }
 
 let stages = createStages();
+let currentStoryLines = storyLines;
 
 let storyIndex = 0;
 let memorySlideIndex = 0;
@@ -190,6 +186,8 @@ let currentSlides = [];
 let isGameEnded = false;
 let gameOverIndex = 0;
 let clearIndex = 0;
+let stageClearIndex = 0;
+let pendingNextStage = false;
 
 const storyScreen = document.getElementById("story-screen");
 const memoryScreen = document.getElementById("memory-screen");
@@ -208,11 +206,16 @@ const memoryPrevBtn = document.getElementById("memory-prev");
 const memoryNextBtn = document.getElementById("memory-next");
 const memoryConfirmBtn = document.getElementById("memory-confirm");
 
+const gamePlayArea = document.getElementById("game-play-area");
 const gameSlideBox = document.getElementById("game-slide");
 const prevBtn = document.getElementById("prev");
 const nextBtn = document.getElementById("next");
 const detectBtn = document.getElementById("detect");
 const safeBtn = document.getElementById("safe");
+
+const stageclearDialog = document.getElementById("stageclear-dialog");
+const stageclearText = document.getElementById("stageclear-text");
+const stageclearNextBtn = document.getElementById("stageclear-next-btn");
 
 const gameoverSpeaker = document.getElementById("gameover-speaker");
 const gameoverText = document.getElementById("gameover-text");
@@ -274,21 +277,21 @@ function showStory() {
       storyScreen.style.backgroundRepeat = "no-repeat";
       storyScreen.style.backgroundColor = "#000";
 
-      storyText.textContent = storyLines[storyIndex];
+      storyText.textContent = currentStoryLines[storyIndex];
       storyText.classList.remove("fade-out");
     }, 800);
 
     storyNextBtn.textContent =
-      storyIndex === storyLines.length - 1 ? "게임 시작" : "다음";
+      storyIndex === currentStoryLines.length - 1 ? "게임 시작" : "다음";
     return;
   }
 
   storyText.classList.remove("fade-out");
-  storyText.textContent = storyLines[storyIndex];
+  storyText.textContent = currentStoryLines[storyIndex];
   updateStoryBackground();
 
   storyNextBtn.textContent =
-    storyIndex === storyLines.length - 1 ? "게임 시작" : "다음";
+    storyIndex === currentStoryLines.length - 1 ? "게임 시작" : "다음";
 }
 
 function renderGameOverLine() {
@@ -338,7 +341,7 @@ function showClearScene() {
   gameoverScreen.classList.remove("active");
 
   clearScreen.classList.add("active");
-  clearScreen.style.backgroundImage = "url('assets/clear.png')";
+  clearScreen.style.backgroundImage = "url('assets/clear.jpg')";
   clearScreen.style.backgroundSize = "contain";
   clearScreen.style.backgroundPosition = "center";
   clearScreen.style.backgroundRepeat = "no-repeat";
@@ -351,20 +354,44 @@ function showClearScene() {
   renderClearLine();
 }
 
+function renderStageClearDialog() {
+  stageclearText.textContent = stageClearLines[stageClearIndex];
+  stageclearNextBtn.textContent =
+    stageClearIndex === stageClearLines.length - 1 ? "다음 스테이지" : "다음";
+}
+
+function showStageClearDialog() {
+  pendingNextStage = true;
+  stageClearIndex = 0;
+  renderStageClearDialog();
+
+  gamePlayArea.classList.add("stage-clear-mode");
+  stageclearDialog.classList.remove("hidden");
+}
+
+function hideStageClearDialog() {
+  pendingNextStage = false;
+  stageclearDialog.classList.add("hidden");
+  gamePlayArea.classList.remove("stage-clear-mode");
+}
+
 function renderSlide(target, slide) {
   if (slide.type === "cover") {
     target.innerHTML = `
       <div class="cover">
-        <div class="cover-title" style="color:${slide.titleColor};">
+        <div class="cover-title ${slide.titleAnimatedClass || ""}" style="color:${slide.titleColor};">
           ${slide.title}
         </div>
         <div
-          class="cover-team"
+          class="cover-team ${slide.teamAnimatedClass || ""}"
           style="color:${slide.teamColor}; font-size:${slide.teamSize}; transform:translateY(${slide.teamOffsetY});"
         >
           ${slide.team}
         </div>
-        <div class="cover-date" style="color:${slide.dateColor}; font-size:${slide.dateSize};">
+        <div
+          class="cover-date ${slide.dateAnimatedClass || ""}"
+          style="color:${slide.dateColor}; font-size:${slide.dateSize}; transform:translateX(${slide.dateOffsetX});"
+        >
           ${slide.date}
         </div>
       </div>
@@ -373,13 +400,20 @@ function renderSlide(target, slide) {
   }
 
   target.innerHTML = `
-    <div class="slide-title" style="color:${slide.titleColor};">
+    <div class="slide-title ${slide.titleAnimatedClass || ""}" style="color:${slide.titleColor};">
       ${slide.title}
     </div>
     <div class="slide-body">
       <ul class="bullet-list">
         ${slide.bullets.map((bullet, index) => `
-          <li style="color:${slide.bulletColors[index]}; font-weight:${slide.bulletWeights[index]};">
+          <li
+            class="${slide.bulletAnimatedClasses[index] || ""}"
+            style="
+              color:${slide.bulletColors[index]};
+              font-weight:${slide.bulletWeights[index]};
+              transform: translateY(${slide.bulletOffsetsY[index]});
+            "
+          >
             ${bullet}
           </li>
         `).join("")}
@@ -417,12 +451,15 @@ function renderGameSlide() {
   updateStatusGame();
   prevBtn.disabled = currentSlideIndex === 0;
   nextBtn.disabled = currentSlideIndex === currentSlides.length - 1;
+  detectBtn.disabled = false;
+  safeBtn.disabled = false;
   renderSlide(gameSlideBox, currentSlides[currentSlideIndex]);
 }
 
 function startStage() {
   currentSlideIndex = 0;
   currentSlides = buildStageSlides();
+  hideStageClearDialog();
   renderGameSlide();
 }
 
@@ -441,8 +478,14 @@ function restartGame() {
   currentSlides = [];
   gameOverIndex = 0;
   clearIndex = 0;
+  stageClearIndex = 0;
   isGameEnded = false;
+  pendingNextStage = false;
   stages = createStages();
+
+  currentStoryLines = restartStoryLines;
+
+  hideStageClearDialog();
 
   gameScreen.classList.remove("active");
   memoryScreen.classList.remove("active");
@@ -454,7 +497,7 @@ function restartGame() {
 }
 
 function judge(choice) {
-  if (isGameEnded) return;
+  if (isGameEnded || pendingNextStage) return;
 
   const stage = stages[currentStageIndex];
   const correct =
@@ -473,21 +516,21 @@ function judge(choice) {
     return;
   }
 
-  currentStageIndex += 1;
-  startStage();
+  showStageClearDialog();
 }
 
 storyNextBtn.addEventListener("click", () => {
-  if (storyIndex === 0) {
-    storyScreen.classList.remove("active");
-    memoryScreen.classList.add("active");
-    memorySlideIndex = 0;
-    renderMemorySlide();
-    return;
-  }
-
-  if (storyIndex < storyLines.length - 1) {
+  if (storyIndex < currentStoryLines.length - 1) {
     storyIndex += 1;
+
+    if (storyIndex === 1) {
+      storyScreen.classList.remove("active");
+      memoryScreen.classList.add("active");
+      memorySlideIndex = 0;
+      renderMemorySlide();
+      return;
+    }
+
     showStory();
   } else {
     startGame();
@@ -516,14 +559,14 @@ memoryConfirmBtn.addEventListener("click", () => {
 });
 
 prevBtn.addEventListener("click", () => {
-  if (currentSlideIndex > 0) {
+  if (currentSlideIndex > 0 && !pendingNextStage) {
     currentSlideIndex -= 1;
     renderGameSlide();
   }
 });
 
 nextBtn.addEventListener("click", () => {
-  if (currentSlideIndex < currentSlides.length - 1) {
+  if (currentSlideIndex < currentSlides.length - 1 && !pendingNextStage) {
     currentSlideIndex += 1;
     renderGameSlide();
   }
@@ -531,6 +574,17 @@ nextBtn.addEventListener("click", () => {
 
 detectBtn.addEventListener("click", () => judge("detect"));
 safeBtn.addEventListener("click", () => judge("safe"));
+
+stageclearNextBtn.addEventListener("click", () => {
+  if (stageClearIndex < stageClearLines.length - 1) {
+    stageClearIndex += 1;
+    renderStageClearDialog();
+    return;
+  }
+
+  currentStageIndex += 1;
+  startStage();
+});
 
 gameoverNextBtn.addEventListener("click", () => {
   if (gameOverIndex < gameOverLines.length - 1) {

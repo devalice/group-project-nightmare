@@ -15,7 +15,6 @@
     </div>
 </header>
 
-<!-- 프롤로그 -->
 <section id="story-screen" class="screen active story-scene">
     <div class="story-backdrop">
         <div class="dialog-box">
@@ -26,39 +25,47 @@
     </div>
 </section>
 
-<!-- 정상 PPT 확인 -->
 <section id="memory-screen" class="screen">
+    <p class="memory-text top-memory-text">
+        마지막으로 확인한 발표 자료는 분명 이 상태였다. 잘 기억해두자.
+    </p>
     <div class="slide-frame">
         <div class="slide" id="memory-slide"></div>
     </div>
+    <div class="memory-controls">
+        <div class="nav-buttons">
+            <button id="memory-prev">← 이전</button>
+            <button id="memory-next">다음 →</button>
+        </div>
 
-    <div class="nav-buttons">
-        <button id="memory-prev">← 이전</button>
-        <button id="memory-next">다음 →</button>
+        <button id="memory-confirm" class="primary-btn">확인 완료</button>
     </div>
-
-    <p class="memory-text">어제 밤엔 분명 이 상태였다. 잘 기억해두자.</p>
-    <button id="memory-confirm" class="primary-btn">확인 완료</button>
 </section>
 
-<!-- 게임 화면 -->
 <section id="game-screen" class="screen">
-    <div class="slide-frame">
-        <div class="slide" id="game-slide"></div>
+    <div id="game-play-area">
+        <div class="slide-frame">
+            <div class="slide" id="game-slide"></div>
+        </div>
+
+        <div class="nav-buttons" id="game-nav-buttons">
+            <button id="prev">← 이전</button>
+            <button id="next">다음 →</button>
+        </div>
+
+        <div class="action-buttons" id="game-action-buttons">
+            <button id="detect" class="danger-btn">이상현상 발견</button>
+            <button id="safe" class="primary-btn">문제 없음</button>
+        </div>
     </div>
 
-    <div class="nav-buttons">
-        <button id="prev">← 이전</button>
-        <button id="next">다음 →</button>
-    </div>
-
-    <div class="action-buttons">
-        <button id="detect" class="danger-btn">이상현상 발견</button>
-        <button id="safe" class="primary-btn">문제 없음</button>
+    <div id="stageclear-dialog" class="dialog-box hidden stage-dialog-only">
+        <div class="speaker-name">나</div>
+        <p id="stageclear-text"></p>
+        <button id="stageclear-next-btn" class="primary-btn">다음</button>
     </div>
 </section>
 
-<!-- 게임오버 화면 -->
 <section id="gameover-screen" class="screen story-scene">
     <div class="story-backdrop">
         <div class="dialog-box">
@@ -69,7 +76,6 @@
     </div>
 </section>
 
-<!-- 클리어 화면 -->
 <section id="clear-screen" class="screen story-scene">
     <div class="story-backdrop">
         <div class="dialog-box">
