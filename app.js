@@ -1,4 +1,5 @@
 const totalStages = 16;
+const anomalyStageCount = 8; // Stage 2~16 중 anomaly 개수
 
 const storyLines = [
   "좋아. PPT 최종 점검을 해볼까.",
@@ -29,6 +30,24 @@ const gameOverLines = [
     speaker: "나",
     speakerClass: "me",
     text: "...꿈인가?"
+  }
+];
+
+const clearLines = [
+  {
+    speaker: "교수님",
+    speakerClass: "professor",
+    text: "발표 잘 들었습니다. 준비를 많이 하셨네요."
+  },
+  {
+    speaker: "팀원",
+    speakerClass: "teammate",
+    text: "와, 해냈다! 진짜 살았다!"
+  },
+  {
+    speaker: "나",
+    speakerClass: "me",
+    text: "후... 진짜 겨우 살았다."
   }
 ];
 
@@ -135,23 +154,30 @@ function shuffle(array) {
 }
 
 function createStages() {
-  const anomalyIds = Object.keys(anomalyTypes);
+  const anomalyIds = shuffle(Object.keys(anomalyTypes)).slice(0, anomalyStageCount);
+  const stagePool = [];
 
-  if (anomalyIds.length < totalStages - 1) {
-    throw new Error("anomaly 개수가 스테이지 수보다 부족합니다.");
-  }
-
-  const shuffled = shuffle(anomalyIds);
-  const createdStages = [{ hasAnomaly: false, anomalyId: null }];
-
-  for (let i = 0; i < totalStages - 1; i += 1) {
-    createdStages.push({
+  for (const anomalyId of anomalyIds) {
+    stagePool.push({
       hasAnomaly: true,
-      anomalyId: shuffled[i]
+      anomalyId
     });
   }
 
-  return createdStages;
+  const normalCount = (totalStages - 1) - anomalyStageCount;
+  for (let i = 0; i < normalCount; i += 1) {
+    stagePool.push({
+      hasAnomaly: false,
+      anomalyId: null
+    });
+  }
+
+  const shuffledPool = shuffle(stagePool);
+
+  return [
+    { hasAnomaly: false, anomalyId: null }, // Stage 1 고정 정상
+    ...shuffledPool
+  ];
 }
 
 let stages = createStages();
@@ -163,10 +189,13 @@ let currentSlideIndex = 0;
 let currentSlides = [];
 let isGameEnded = false;
 let gameOverIndex = 0;
+let clearIndex = 0;
 
 const storyScreen = document.getElementById("story-screen");
 const memoryScreen = document.getElementById("memory-screen");
 const gameScreen = document.getElementById("game-screen");
+const gameoverScreen = document.getElementById("gameover-screen");
+const clearScreen = document.getElementById("clear-screen");
 
 const storyText = document.getElementById("story-text");
 const storyNextBtn = document.getElementById("story-next-btn");
@@ -185,15 +214,13 @@ const nextBtn = document.getElementById("next");
 const detectBtn = document.getElementById("detect");
 const safeBtn = document.getElementById("safe");
 
-const resultOverlay = document.getElementById("result-overlay");
-const resultTitle = document.getElementById("result-title");
-const resultMessage = document.getElementById("result-message");
-const resultBtn = document.getElementById("result-btn");
-
-const gameoverScreen = document.getElementById("gameover-screen");
 const gameoverSpeaker = document.getElementById("gameover-speaker");
 const gameoverText = document.getElementById("gameover-text");
 const gameoverNextBtn = document.getElementById("gameover-next-btn");
+
+const clearSpeaker = document.getElementById("clear-speaker");
+const clearText = document.getElementById("clear-text");
+const clearNextBtn = document.getElementById("clear-next-btn");
 
 function deepCopySlides(slides) {
   return JSON.parse(JSON.stringify(slides));
@@ -264,11 +291,21 @@ function showStory() {
     storyIndex === storyLines.length - 1 ? "게임 시작" : "다음";
 }
 
+function renderGameOverLine() {
+  const line = gameOverLines[gameOverIndex];
+  gameoverSpeaker.textContent = line.speaker;
+  gameoverSpeaker.className = "speaker-name";
+  gameoverSpeaker.classList.add(line.speakerClass);
+  gameoverText.textContent = line.text;
+  gameoverNextBtn.textContent =
+    gameOverIndex === gameOverLines.length - 1 ? "처음으로" : "다음";
+}
+
 function showGameOverScene() {
   gameScreen.classList.remove("active");
   storyScreen.classList.remove("active");
   memoryScreen.classList.remove("active");
-  hideResult();
+  clearScreen.classList.remove("active");
 
   gameoverScreen.classList.add("active");
   gameoverScreen.style.backgroundImage = "url('assets/gameover.png')";
@@ -284,16 +321,34 @@ function showGameOverScene() {
   renderGameOverLine();
 }
 
-function renderGameOverLine() {
-  const line = gameOverLines[gameOverIndex];
-  gameoverSpeaker.textContent = line.speaker;
-  gameoverSpeaker.className = "";
-  gameoverSpeaker.classList.add("speaker-name");
-  gameoverSpeaker.classList.add(line.speakerClass);
-  gameoverText.textContent = line.text;
+function renderClearLine() {
+  const line = clearLines[clearIndex];
+  clearSpeaker.textContent = line.speaker;
+  clearSpeaker.className = "speaker-name";
+  clearSpeaker.classList.add(line.speakerClass);
+  clearText.textContent = line.text;
+  clearNextBtn.textContent =
+    clearIndex === clearLines.length - 1 ? "처음으로" : "다음";
+}
 
-  gameoverNextBtn.textContent =
-    gameOverIndex === gameOverLines.length - 1 ? "처음으로" : "다음";
+function showClearScene() {
+  gameScreen.classList.remove("active");
+  storyScreen.classList.remove("active");
+  memoryScreen.classList.remove("active");
+  gameoverScreen.classList.remove("active");
+
+  clearScreen.classList.add("active");
+  clearScreen.style.backgroundImage = "url('assets/clear.png')";
+  clearScreen.style.backgroundSize = "contain";
+  clearScreen.style.backgroundPosition = "center";
+  clearScreen.style.backgroundRepeat = "no-repeat";
+  clearScreen.style.backgroundColor = "#000";
+
+  stageLabel.textContent = "클리어!";
+  slideLabel.textContent = "";
+
+  clearIndex = 0;
+  renderClearLine();
 }
 
 function renderSlide(target, slide) {
@@ -371,17 +426,6 @@ function startStage() {
   renderGameSlide();
 }
 
-function showResult(title, message, btnText) {
-  resultTitle.textContent = title;
-  resultMessage.textContent = message;
-  resultBtn.textContent = btnText;
-  resultOverlay.classList.remove("hidden");
-}
-
-function hideResult() {
-  resultOverlay.classList.add("hidden");
-}
-
 function startGame() {
   storyScreen.classList.remove("active");
   memoryScreen.classList.remove("active");
@@ -396,14 +440,14 @@ function restartGame() {
   currentSlideIndex = 0;
   currentSlides = [];
   gameOverIndex = 0;
+  clearIndex = 0;
   isGameEnded = false;
   stages = createStages();
-
-  hideResult();
 
   gameScreen.classList.remove("active");
   memoryScreen.classList.remove("active");
   gameoverScreen.classList.remove("active");
+  clearScreen.classList.remove("active");
   storyScreen.classList.add("active");
 
   showStory();
@@ -425,11 +469,7 @@ function judge(choice) {
 
   if (currentStageIndex === totalStages - 1) {
     isGameEnded = true;
-    showResult(
-      "클리어!",
-      "모든 이상현상을 찾아냈습니다.\n발표는 무사히 끝났습니다.",
-      "처음으로"
-    );
+    showClearScene();
     return;
   }
 
@@ -498,11 +538,15 @@ gameoverNextBtn.addEventListener("click", () => {
     renderGameOverLine();
     return;
   }
-
   restartGame();
 });
 
-resultBtn.addEventListener("click", () => {
+clearNextBtn.addEventListener("click", () => {
+  if (clearIndex < clearLines.length - 1) {
+    clearIndex += 1;
+    renderClearLine();
+    return;
+  }
   restartGame();
 });
 

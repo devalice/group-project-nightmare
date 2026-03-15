@@ -39,7 +39,7 @@ body {
   display: block;
 }
 
-/* 프롤로그 / 게임오버 공통 */
+/* 프롤로그 / 게임오버 / 클리어 공통 */
 .story-scene {
   padding: 0;
   background-color: #000;
@@ -77,20 +77,24 @@ body {
   font-weight: 700;
 }
 
-#gameover-speaker.professor {
+#gameover-speaker.professor,
+#clear-speaker.professor {
   background: #7c3aed;
 }
 
-#gameover-speaker.teammate {
+#gameover-speaker.teammate,
+#clear-speaker.teammate {
   background: #475569;
 }
 
-#gameover-speaker.me {
+#gameover-speaker.me,
+#clear-speaker.me {
   background: #2563eb;
 }
 
 #story-text,
-#gameover-text {
+#gameover-text,
+#clear-text {
   min-height: 90px;
   margin: 0;
   font-size: 22px;
@@ -109,7 +113,8 @@ body {
 }
 
 #story-next-btn,
-#gameover-next-btn {
+#gameover-next-btn,
+#clear-next-btn {
   min-width: 100px;
   margin-top: 14px;
 }
@@ -260,42 +265,6 @@ button:disabled {
   margin: 0 auto;
 }
 
-/* 클리어 오버레이 */
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-}
-
-.hidden {
-  display: none;
-}
-
-.result-box {
-  width: min(520px, 92%);
-  background: #020617;
-  border: 1px solid #334155;
-  border-radius: 15px;
-  padding: 36px;
-  text-align: center;
-}
-
-.result-box h2 {
-  margin-top: 0;
-  font-size: 30px;
-}
-
-.result-box p {
-  white-space: pre-line;
-  font-size: 18px;
-  line-height: 1.7;
-  color: #e2e8f0;
-}
-
 /* 반응형 */
 @media (max-width: 768px) {
   .top-bar {
@@ -321,7 +290,8 @@ button:disabled {
   }
 
   #story-text,
-  #gameover-text {
+  #gameover-text,
+  #clear-text {
     font-size: 19px;
     min-height: 110px;
   }
