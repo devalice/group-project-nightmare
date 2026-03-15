@@ -74,6 +74,8 @@ const normalSlides = [
     team: "Team abc",
     date: "2025.06.10",
     titleColor: "#111827",
+    titleClass: "",
+    titleRotate: "0deg",
     teamColor: "#374151",
     dateColor: "#6b7280",
     teamSize: "24px",
@@ -82,13 +84,19 @@ const normalSlides = [
     titleAnimatedClass: "",
     dateSize: "18px",
     dateOffsetX: "0px",
-    dateAnimatedClass: ""
+    dateAnimatedClass: "",
+    footerNote: ""
   },
   {
     type: "content",
     title: "문제 정의",
     titleColor: "#111827",
+    titleClass: "",
+    titleRotate: "0deg",
     titleAnimatedClass: "",
+    subtitleText: "",
+    subtitleClass: "",
+    subtitleRotate: "0deg",
     bullets: [
       "일정 관리 앱 사용률 감소",
       "협업 기능 부족",
@@ -100,13 +108,19 @@ const normalSlides = [
     bulletAnimatedClasses: ["", "", ""],
     image: "assets/graph.png",
     imageRotate: "0deg",
-    imageScale: "1"
+    imageScale: "1",
+    footerNote: ""
   },
   {
     type: "content",
     title: "해결 방안",
     titleColor: "#111827",
+    titleClass: "",
+    titleRotate: "0deg",
     titleAnimatedClass: "",
+    subtitleText: "",
+    subtitleClass: "",
+    subtitleRotate: "0deg",
     bullets: [
       "AI 일정 추천",
       "팀 일정 공유",
@@ -118,7 +132,8 @@ const normalSlides = [
     bulletAnimatedClasses: ["", "", ""],
     image: "assets/service.png",
     imageRotate: "0deg",
-    imageScale: "1"
+    imageScale: "1",
+    footerNote: ""
   }
 ];
 
@@ -132,6 +147,7 @@ const anomalyTypes = {
   cover_team_down(slides) { slides[0].teamOffsetY = "24px"; },
   cover_date_right(slides) { slides[0].dateOffsetX = "18px"; },
   cover_team_drifting(slides) { slides[0].teamAnimatedClass = "drift-down"; },
+
   problem_title_red(slides) { slides[1].titleColor = "#dc2626"; },
   problem_title_float(slides) { slides[1].titleAnimatedClass = "title-float"; },
   problem_bullet_red(slides) { slides[1].bulletColors = ["#111827", "#dc2626", "#111827"]; },
@@ -139,13 +155,118 @@ const anomalyTypes = {
   problem_bullet_typo(slides) { slides[1].bullets[2] = "복잡한 U1"; },
   problem_bullet_shift(slides) { slides[1].bulletOffsetsY = ["0px", "16px", "0px"]; },
   problem_bullet_wiggle(slides) { slides[1].bulletAnimatedClasses = ["", "wiggle-text", ""]; },
-  graph_cat(slides) { slides[1].image = "assets/cat.png"; },
-  graph_dog(slides) { slides[1].image = "assets/dog.png"; },
+  graph_drunk(slides) { slides[1].image = "assets/drunk.jpg"; },
+  graph_drunk2(slides) { slides[1].image = "assets/drunk2.jpg"; },
+
   solution_title_red(slides) { slides[2].titleColor = "#dc2626"; },
   solution_title_float(slides) { slides[2].titleAnimatedClass = "title-float"; },
   solution_bullet_blue(slides) { slides[2].bulletColors = ["#2563eb", "#111827", "#111827"]; },
-  service_goat(slides) { slides[2].image = "assets/goat.png"; }
+  service_drunk3(slides) { slides[2].image = "assets/drunk3.jpg"; },
+
+  cover_title_final_file(slides) {
+    slides[0].title = "AI 기반 일정 관리 서비스_최종진짜.pptx";
+  },
+
+  cover_title_rainbow(slides) {
+    slides[0].titleClass = "rainbow-text";
+  },
+
+  cover_title_rotate(slides) {
+    slides[0].titleRotate = "-6deg";
+  },
+
+  drunk_footer_note(slides) {
+    slides[0].footerNote = "* 이 PPT는 취중 제작되었습니다";
+  },
+
+  problem_title_team_project(slides) {
+    slides[1].title = "문제는 우리 팀플이었다";
+  },
+
+  problem_contact_truth(slides) {
+    slides[1].bullets[1] = "사실 팀원이 연락을 안 봄";
+  },
+
+  problem_title_rainbow(slides) {
+    slides[1].titleClass = "rainbow-text";
+  },
+
+  problem_title_rotate(slides) {
+    slides[1].titleRotate = "5deg";
+  },
+
+  solution_subtitle_pray(slides) {
+    slides[2].subtitleText = "기도";
+  },
+
+  solution_subtitle_pray_float(slides) {
+    slides[2].subtitleText = "기도";
+    slides[2].subtitleClass = "title-float";
+  },
+
+  solution_title_rainbow(slides) {
+    slides[2].titleClass = "rainbow-text";
+  },
+
+  solution_title_rotate(slides) {
+    slides[2].titleRotate = "-5deg";
+  },
+
+  thank_you_insert(slides) {
+    slides.splice(2, 0, {
+      type: "thanks",
+      title: "감사합니다",
+      titleColor: "#111827",
+      titleClass: "",
+      titleRotate: "0deg",
+      footerNote: "* 저만 A+ 주세요, 교수님"
+    });
+  }
 };
+
+const imageAnomalyIds = [
+  "graph_drunk",
+  "graph_drunk2",
+  "service_drunk3"
+];
+
+const textAnomalyIds = [
+  "team_goat",
+  "cover_title_red",
+  "cover_team_blue",
+  "cover_date_green",
+  "cover_date_weird",
+  "problem_title_red",
+  "problem_bullet_red",
+  "problem_bullet_bold",
+  "problem_bullet_typo",
+  "solution_title_red",
+  "solution_bullet_blue",
+  "cover_title_final_file",
+  "drunk_footer_note",
+  "problem_title_team_project",
+  "problem_contact_truth",
+  "solution_subtitle_pray",
+  "solution_title_rainbow",
+  "thank_you_insert"
+];
+
+const layoutAnomalyIds = [
+  "cover_team_big",
+  "cover_team_down",
+  "cover_date_right",
+  "cover_team_drifting",
+  "problem_title_float",
+  "problem_bullet_shift",
+  "problem_bullet_wiggle",
+  "solution_title_float",
+  "cover_title_rainbow",
+  "cover_title_rotate",
+  "problem_title_rainbow",
+  "problem_title_rotate",
+  "solution_subtitle_pray_float",
+  "solution_title_rotate"
+];
 
 function shuffle(array) {
   const copied = [...array];
@@ -156,15 +277,55 @@ function shuffle(array) {
   return copied;
 }
 
-function createStages() {
-  const anomalyIds = shuffle(Object.keys(anomalyTypes)).slice(0, anomalyStageCount);
-  const stagePool = [];
+function pickUniqueFromPool(pool, count, excluded = []) {
+  const excludedSet = new Set(excluded);
+  const filtered = pool.filter((id) => !excludedSet.has(id));
+  return shuffle(filtered).slice(0, count);
+}
 
-  for (const anomalyId of anomalyIds) {
-    stagePool.push({ hasAnomaly: true, anomalyId });
+function createStages() {
+  const requiredImageCount = 2;
+  const requiredTextCount = 3;
+  const requiredLayoutCount = 3;
+
+  const requiredTotal =
+    requiredImageCount + requiredTextCount + requiredLayoutCount;
+
+  if (requiredTotal > anomalyStageCount) {
+    throw new Error(
+      `카테고리 최소 합(${requiredTotal})이 anomalyStageCount(${anomalyStageCount})보다 큽니다.`
+    );
   }
 
-  const normalCount = (totalStages - 1) - anomalyStageCount;
+  const pickedImage = pickUniqueFromPool(imageAnomalyIds, requiredImageCount);
+  const pickedText = pickUniqueFromPool(textAnomalyIds, requiredTextCount, pickedImage);
+  const pickedLayout = pickUniqueFromPool(
+    layoutAnomalyIds,
+    requiredLayoutCount,
+    [...pickedImage, ...pickedText]
+  );
+
+  const pickedRequired = [
+    ...pickedImage,
+    ...pickedText,
+    ...pickedLayout
+  ];
+
+  const allAnomalyIds = Object.keys(anomalyTypes);
+  const remainingNeedCount = anomalyStageCount - pickedRequired.length;
+  const remainingCandidates = allAnomalyIds.filter(
+    (id) => !pickedRequired.includes(id)
+  );
+  const extraPicked = shuffle(remainingCandidates).slice(0, remainingNeedCount);
+
+  const anomalyIds = shuffle([...pickedRequired, ...extraPicked]);
+
+  const stagePool = anomalyIds.map((anomalyId) => ({
+    hasAnomaly: true,
+    anomalyId
+  }));
+
+  const normalCount = (totalStages - 1) - anomalyIds.length;
   for (let i = 0; i < normalCount; i += 1) {
     stagePool.push({ hasAnomaly: false, anomalyId: null });
   }
@@ -379,7 +540,10 @@ function renderSlide(target, slide) {
   if (slide.type === "cover") {
     target.innerHTML = `
       <div class="cover">
-        <div class="cover-title ${slide.titleAnimatedClass || ""}" style="color:${slide.titleColor};">
+        <div
+          class="cover-title ${slide.titleAnimatedClass || ""} ${slide.titleClass || ""}"
+          style="color:${slide.titleColor}; transform:rotate(${slide.titleRotate || "0deg"});"
+        >
           ${slide.title}
         </div>
         <div
@@ -394,15 +558,44 @@ function renderSlide(target, slide) {
         >
           ${slide.date}
         </div>
+        ${slide.footerNote ? `<div class="slide-footer-note">${slide.footerNote}</div>` : ""}
+      </div>
+    `;
+    return;
+  }
+
+  if (slide.type === "thanks") {
+    target.innerHTML = `
+      <div class="cover thanks-slide">
+        <div
+          class="cover-title ${slide.titleClass || ""}"
+          style="color:${slide.titleColor}; transform:rotate(${slide.titleRotate || "0deg"});"
+        >
+          ${slide.title}
+        </div>
+        ${slide.footerNote ? `<div class="slide-footer-note">${slide.footerNote}</div>` : ""}
       </div>
     `;
     return;
   }
 
   target.innerHTML = `
-    <div class="slide-title ${slide.titleAnimatedClass || ""}" style="color:${slide.titleColor};">
+    <div
+      class="slide-title ${slide.titleAnimatedClass || ""} ${slide.titleClass || ""}"
+      style="color:${slide.titleColor}; transform:rotate(${slide.titleRotate || "0deg"});"
+    >
       ${slide.title}
     </div>
+
+    ${slide.subtitleText ? `
+      <div
+        class="slide-subtitle ${slide.subtitleClass || ""}"
+        style="transform:rotate(${slide.subtitleRotate || "0deg"});"
+      >
+        ${slide.subtitleText}
+      </div>
+    ` : ""}
+
     <div class="slide-body">
       <ul class="bullet-list">
         ${slide.bullets.map((bullet, index) => `
@@ -426,6 +619,8 @@ function renderSlide(target, slide) {
         >
       </div>
     </div>
+
+    ${slide.footerNote ? `<div class="slide-footer-note">${slide.footerNote}</div>` : ""}
   `;
 }
 

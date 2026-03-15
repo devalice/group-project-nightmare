@@ -405,6 +405,41 @@ button:disabled {
   animation: titleFloat 2s ease-in-out infinite;
 }
 
+.rainbow-text {
+  background: linear-gradient(
+    90deg,
+    #ef4444,
+    #f59e0b,
+    #eab308,
+    #22c55e,
+    #3b82f6,
+    #8b5cf6,
+    #ec4899
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+.slide-subtitle {
+  margin-bottom: 14px;
+  font-size: 18px;
+  font-weight: 800;
+  color: #7c3aed;
+}
+
+.slide-footer-note {
+  margin-top: 16px;
+  font-size: 13px;
+  color: #6b7280;
+  text-align: right;
+}
+
+.thanks-slide .cover-title {
+  font-size: clamp(34px, 4vw, 48px);
+}
+
 @media (max-width: 768px) {
   :root {
     --top-bar-height: 95px;
