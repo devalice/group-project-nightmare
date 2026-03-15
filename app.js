@@ -1,5 +1,5 @@
 const totalStages = 16;
-const anomalyStageCount = 8;
+const anomalyStageCount = 10;
 
 const storyLines = [
   "후. 드디어 다 했네. 마지막으로 PPT 최종 점검을 해볼까.",
@@ -11,7 +11,7 @@ const storyLines = [
   "마지막으로 PPT나 다시 확인해볼까.",
   "...어? 잠깐만.\n뭐냐 이거? 어제랑 다른데?",
   "설마 내가 술 취해서 건드린 건가...?",
-  "x됐다.\n이상한 부분부터 빨리 찾아야 해!"
+  "망했다.\n이상한 부분부터 빨리 찾아야 해!"
 ];
 
 const restartStoryLines = [
@@ -24,7 +24,7 @@ const restartStoryLines = [
   "마지막으로 PPT나 다시 확인해볼까.",
   "...어? 잠깐만.\n뭐냐 이거? 어제랑 다른데?",
   "설마 내가 술 취해서 건드린 건가...?",
-  "x됐다.\n이상한 부분부터 빨리 찾아야 해!"
+  "망했다.\n이상한 부분부터 빨리 찾아야 해!"
 ];
 
 const stageClearLines = [
@@ -224,47 +224,50 @@ const anomalyTypes = {
   }
 };
 
+const guaranteedAnomalyIds = [
+  "thank_you_insert"
+];
+
 const imageAnomalyIds = [
   "graph_drunk",
   "graph_drunk2",
   "service_drunk3"
 ];
 
-const textAnomalyIds = [
-  "team_goat",
+const colorAnomalyIds = [
   "cover_title_red",
   "cover_team_blue",
   "cover_date_green",
-  "cover_date_weird",
   "problem_title_red",
   "problem_bullet_red",
-  "problem_bullet_bold",
-  "problem_bullet_typo",
   "solution_title_red",
-  "solution_bullet_blue",
-  "cover_title_final_file",
-  "drunk_footer_note",
-  "problem_title_team_project",
-  "problem_contact_truth",
-  "solution_subtitle_pray",
-  "solution_title_rainbow",
-  "thank_you_insert"
+  "solution_bullet_blue"
 ];
 
-const layoutAnomalyIds = [
+const otherAnomalyIds = [
+  "team_goat",
   "cover_team_big",
+  "cover_date_weird",
   "cover_team_down",
   "cover_date_right",
   "cover_team_drifting",
   "problem_title_float",
+  "problem_bullet_bold",
+  "problem_bullet_typo",
   "problem_bullet_shift",
   "problem_bullet_wiggle",
   "solution_title_float",
+  "cover_title_final_file",
   "cover_title_rainbow",
   "cover_title_rotate",
+  "drunk_footer_note",
+  "problem_title_team_project",
+  "problem_contact_truth",
   "problem_title_rainbow",
   "problem_title_rotate",
+  "solution_subtitle_pray",
   "solution_subtitle_pray_float",
+  "solution_title_rainbow",
   "solution_title_rotate"
 ];
 
@@ -284,48 +287,55 @@ function pickUniqueFromPool(pool, count, excluded = []) {
 }
 
 function createStages() {
-  const requiredImageCount = 2;
-  const requiredTextCount = 3;
-  const requiredLayoutCount = 3;
+  const guaranteedCount = guaranteedAnomalyIds.length;
+  const imageLimit = 1;
+  const colorLimit = 1;
 
-  const requiredTotal =
-    requiredImageCount + requiredTextCount + requiredLayoutCount;
-
-  if (requiredTotal > anomalyStageCount) {
-    throw new Error(
-      `카테고리 최소 합(${requiredTotal})이 anomalyStageCount(${anomalyStageCount})보다 큽니다.`
-    );
+  if (guaranteedCount > anomalyStageCount) {
+    throw new Error("보장 이상현상 수가 anomalyStageCount보다 큽니다.");
   }
 
-  const pickedImage = pickUniqueFromPool(imageAnomalyIds, requiredImageCount);
-  const pickedText = pickUniqueFromPool(textAnomalyIds, requiredTextCount, pickedImage);
-  const pickedLayout = pickUniqueFromPool(
-    layoutAnomalyIds,
-    requiredLayoutCount,
-    [...pickedImage, ...pickedText]
+  const pickedImage = pickUniqueFromPool(
+    imageAnomalyIds,
+    imageLimit,
+    guaranteedAnomalyIds
   );
 
-  const pickedRequired = [
+  const pickedColor = pickUniqueFromPool(
+    colorAnomalyIds,
+    colorLimit,
+    [...guaranteedAnomalyIds, ...pickedImage]
+  );
+
+  const pickedFixed = [
+    ...guaranteedAnomalyIds,
     ...pickedImage,
-    ...pickedText,
-    ...pickedLayout
+    ...pickedColor
   ];
 
-  const allAnomalyIds = Object.keys(anomalyTypes);
-  const remainingNeedCount = anomalyStageCount - pickedRequired.length;
-  const remainingCandidates = allAnomalyIds.filter(
-    (id) => !pickedRequired.includes(id)
+  const remainingNeedCount = anomalyStageCount - pickedFixed.length;
+
+  const pickedOthers = pickUniqueFromPool(
+    otherAnomalyIds,
+    remainingNeedCount,
+    pickedFixed
   );
-  const extraPicked = shuffle(remainingCandidates).slice(0, remainingNeedCount);
 
-  const anomalyIds = shuffle([...pickedRequired, ...extraPicked]);
+  const pickedAnomalyIds = shuffle([
+    ...pickedFixed,
+    ...pickedOthers
+  ]);
 
-  const stagePool = anomalyIds.map((anomalyId) => ({
+  if (pickedAnomalyIds.length !== anomalyStageCount) {
+    throw new Error("선택된 이상현상 개수가 anomalyStageCount와 일치하지 않습니다.");
+  }
+
+  const stagePool = pickedAnomalyIds.map((anomalyId) => ({
     hasAnomaly: true,
     anomalyId
   }));
 
-  const normalCount = (totalStages - 1) - anomalyIds.length;
+  const normalCount = (totalStages - 1) - pickedAnomalyIds.length;
   for (let i = 0; i < normalCount; i += 1) {
     stagePool.push({ hasAnomaly: false, anomalyId: null });
   }
@@ -366,9 +376,15 @@ const memorySlideBox = document.getElementById("memory-slide");
 const memoryPrevBtn = document.getElementById("memory-prev");
 const memoryNextBtn = document.getElementById("memory-next");
 const memoryConfirmBtn = document.getElementById("memory-confirm");
+const memoryThumbnailList = document.getElementById("memory-thumbnail-list");
+const memoryStatusText = document.getElementById("memory-status-text");
 
 const gamePlayArea = document.getElementById("game-play-area");
 const gameSlideBox = document.getElementById("game-slide");
+const gameThumbnailList = document.getElementById("game-thumbnail-list");
+const gameFileName = document.getElementById("game-file-name");
+const gameStatusText = document.getElementById("game-status-text");
+const gameAlertBanner = document.getElementById("game-alert-banner");
 const prevBtn = document.getElementById("prev");
 const nextBtn = document.getElementById("next");
 const detectBtn = document.getElementById("detect");
@@ -398,11 +414,42 @@ function updateStatusStory() {
 function updateStatusMemory() {
   stageLabel.textContent = "정상 PPT 확인";
   slideLabel.textContent = `Slide ${memorySlideIndex + 1} / ${normalSlides.length}`;
+
+  if (memoryStatusText) {
+    memoryStatusText.textContent = `정상 PPT 확인 중 · 슬라이드 ${memorySlideIndex + 1}/${normalSlides.length}`;
+  }
 }
 
 function updateStatusGame() {
-  stageLabel.textContent = `Stage ${currentStageIndex + 1} / ${totalStages}`;
+  const currentStage = currentStageIndex + 1;
+  const remainingStage = totalStages - currentStage;
+
+  stageLabel.textContent = `Stage ${currentStage} / ${totalStages}`;
   slideLabel.textContent = `Slide ${currentSlideIndex + 1} / ${currentSlides.length}`;
+
+  if (gameAlertBanner) {
+    if (remainingStage <= 0) {
+      gameAlertBanner.textContent =
+        "🚨 마지막 PPT 확인이다. 이상한 부분이 있으면 반드시 찾아야 한다.";
+    } else if (remainingStage <= 2) {
+      gameAlertBanner.textContent =
+        `⚠ 발표 직전이다... 이상한 부분이 있으면 찾아야 한다. (남은 PPT ${remainingStage}개)`;
+    } else {
+      gameAlertBanner.textContent =
+        `발표 직전 최종 점검 중... 이상한 부분이 있으면 찾아야 한다. (남은 PPT ${remainingStage}개)`;
+    }
+  }
+
+  if (gameStatusText) {
+    if (remainingStage <= 0) {
+      gameStatusText.textContent = "🚨 마지막 PPT 확인";
+    } else if (remainingStage <= 2) {
+      gameStatusText.textContent = "⚠ 발표 시작 직전";
+    } else {
+      gameStatusText.textContent =
+        `발표 자료 점검 중 · Stage ${currentStage}/${totalStages} · 남은 검사 ${remainingStage}개`;
+    }
+  }
 }
 
 function updateStoryBackground() {
@@ -536,6 +583,71 @@ function hideStageClearDialog() {
   gamePlayArea.classList.remove("stage-clear-mode");
 }
 
+function getSlideThumbTitle(slide) {
+  if (slide.type === "cover") return slide.title;
+  if (slide.type === "thanks") return "감사합니다";
+  return slide.title;
+}
+
+function getSlideThumbPreview(slide) {
+  if (slide.type === "cover") {
+    return `${slide.team} / ${slide.date}`;
+  }
+
+  if (slide.type === "thanks") {
+    return slide.footerNote || "마무리 슬라이드";
+  }
+
+  if (slide.bullets && slide.bullets.length > 0) {
+    return slide.bullets[0];
+  }
+
+  return "";
+}
+
+function renderMemoryThumbnails() {
+  if (!memoryThumbnailList) return;
+
+  memoryThumbnailList.innerHTML = normalSlides
+    .map((slide, index) => `
+      <button type="button" class="slide-thumb ${index === memorySlideIndex ? "active" : ""}" data-index="${index}">
+        <div class="slide-thumb-number">${index + 1}</div>
+        <div class="slide-thumb-title">${getSlideThumbTitle(slide)}</div>
+        <div class="slide-thumb-preview">${getSlideThumbPreview(slide)}</div>
+      </button>
+    `)
+    .join("");
+
+  memoryThumbnailList.querySelectorAll(".slide-thumb").forEach((button) => {
+    button.addEventListener("click", () => {
+      memorySlideIndex = Number(button.dataset.index);
+      renderMemorySlide();
+    });
+  });
+}
+
+function renderGameThumbnails() {
+  if (!gameThumbnailList) return;
+
+  gameThumbnailList.innerHTML = currentSlides
+    .map((slide, index) => `
+      <button type="button" class="slide-thumb ${index === currentSlideIndex ? "active" : ""}" data-index="${index}">
+        <div class="slide-thumb-number">${index + 1}</div>
+        <div class="slide-thumb-title">${getSlideThumbTitle(slide)}</div>
+        <div class="slide-thumb-preview">${getSlideThumbPreview(slide)}</div>
+      </button>
+    `)
+    .join("");
+
+  gameThumbnailList.querySelectorAll(".slide-thumb").forEach((button) => {
+    button.addEventListener("click", () => {
+      if (pendingNextStage) return;
+      currentSlideIndex = Number(button.dataset.index);
+      renderGameSlide();
+    });
+  });
+}
+
 function renderSlide(target, slide) {
   if (slide.type === "cover") {
     target.innerHTML = `
@@ -629,6 +741,7 @@ function renderMemorySlide() {
   memoryPrevBtn.disabled = memorySlideIndex === 0;
   memoryNextBtn.disabled = memorySlideIndex === normalSlides.length - 1;
   renderSlide(memorySlideBox, normalSlides[memorySlideIndex]);
+  renderMemoryThumbnails();
 }
 
 function buildStageSlides() {
@@ -642,13 +755,36 @@ function buildStageSlides() {
   return slides;
 }
 
+function updateGameFileName() {
+  if (!gameFileName || currentSlides.length === 0) return;
+
+  const coverSlide = currentSlides.find((slide) => slide.type === "cover");
+  if (!coverSlide) {
+    gameFileName.textContent = "AI 기반 일정 관리 서비스.pptx";
+    return;
+  }
+
+  if (
+    coverSlide.title.includes(".pptx") ||
+    coverSlide.title.includes("_최종") ||
+    coverSlide.title.includes("최종진짜")
+  ) {
+    gameFileName.textContent = coverSlide.title;
+    return;
+  }
+
+  gameFileName.textContent = "AI 기반 일정 관리 서비스.pptx";
+}
+
 function renderGameSlide() {
   updateStatusGame();
+  updateGameFileName();
   prevBtn.disabled = currentSlideIndex === 0;
   nextBtn.disabled = currentSlideIndex === currentSlides.length - 1;
   detectBtn.disabled = false;
   safeBtn.disabled = false;
   renderSlide(gameSlideBox, currentSlides[currentSlideIndex]);
+  renderGameThumbnails();
 }
 
 function startStage() {

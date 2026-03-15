@@ -26,36 +26,118 @@
 </section>
 
 <section id="memory-screen" class="screen">
-    <p class="memory-text top-memory-text">
-        마지막으로 확인한 발표 자료는 분명 이 상태였다. 잘 기억해두자.
-    </p>
-    <div class="slide-frame">
-        <div class="slide" id="memory-slide"></div>
-    </div>
-    <div class="memory-controls">
-        <div class="nav-buttons">
-            <button id="memory-prev">← 이전</button>
-            <button id="memory-next">다음 →</button>
+    <div class="ppt-window">
+        <div class="ppt-titlebar">
+            <div class="ppt-title-left">
+                <span class="ppt-dot red"></span>
+                <span class="ppt-dot yellow"></span>
+                <span class="ppt-dot green"></span>
+                <span class="ppt-app-name">PowerPoint</span>
+            </div>
+            <div class="ppt-file-name">AI 기반 일정 관리 서비스.pptx</div>
+            <div class="ppt-title-right">자동 저장됨</div>
         </div>
 
-        <button id="memory-confirm" class="primary-btn">확인 완료</button>
+        <div class="ppt-ribbon">
+            <span class="ppt-tab active">홈</span>
+            <span class="ppt-tab">삽입</span>
+            <span class="ppt-tab">디자인</span>
+            <span class="ppt-tab">전환</span>
+            <span class="ppt-tab">애니메이션</span>
+            <span class="ppt-tab">슬라이드 쇼</span>
+        </div>
+
+        <div class="ppt-editor">
+            <aside class="ppt-sidebar">
+                <div class="ppt-sidebar-title">슬라이드</div>
+                <div id="memory-thumbnail-list" class="thumbnail-list"></div>
+            </aside>
+
+            <main class="ppt-main">
+                <p class="memory-text top-memory-text">
+                    마지막으로 확인한 발표 자료는 분명 이 상태였다. 잘 기억해두자.
+                </p>
+
+                <div class="slide-workspace">
+                    <div class="workspace-label">편집 화면</div>
+                    <div class="slide-frame">
+                        <div class="slide" id="memory-slide"></div>
+                    </div>
+                </div>
+
+                <div class="memory-controls">
+                    <div class="nav-buttons">
+                        <button id="memory-prev">← 이전</button>
+                        <button id="memory-next">다음 →</button>
+                    </div>
+
+                    <button id="memory-confirm" class="primary-btn">확인 완료</button>
+                </div>
+            </main>
+        </div>
+
+        <div class="ppt-statusbar">
+            <span>보기: 일반</span>
+            <span id="memory-status-text">정상 PPT 확인 중</span>
+        </div>
     </div>
 </section>
 
 <section id="game-screen" class="screen">
-    <div id="game-play-area">
-        <div class="slide-frame">
-            <div class="slide" id="game-slide"></div>
+    <div class="ppt-window game-ppt-window">
+        <div class="ppt-titlebar">
+            <div class="ppt-title-left">
+                <span class="ppt-dot red"></span>
+                <span class="ppt-dot yellow"></span>
+                <span class="ppt-dot green"></span>
+                <span class="ppt-app-name">PowerPoint</span>
+            </div>
+            <div class="ppt-file-name" id="game-file-name">AI 기반 일정 관리 서비스.pptx</div>
+            <div class="ppt-title-right danger-text">발표 5분 전</div>
         </div>
 
-        <div class="nav-buttons" id="game-nav-buttons">
-            <button id="prev">← 이전</button>
-            <button id="next">다음 →</button>
+        <div class="ppt-ribbon">
+            <span class="ppt-tab active">홈</span>
+            <span class="ppt-tab">삽입</span>
+            <span class="ppt-tab">디자인</span>
+            <span class="ppt-tab">전환</span>
+            <span class="ppt-tab">애니메이션</span>
+            <span class="ppt-tab">검토</span>
         </div>
 
-        <div class="action-buttons" id="game-action-buttons">
-            <button id="detect" class="danger-btn">이상현상 발견</button>
-            <button id="safe" class="primary-btn">문제 없음</button>
+        <div id="game-play-area" class="ppt-editor">
+            <aside class="ppt-sidebar">
+                <div class="ppt-sidebar-title">슬라이드</div>
+                <div id="game-thumbnail-list" class="thumbnail-list"></div>
+            </aside>
+
+            <main class="ppt-main">
+                <div class="game-alert-banner" id="game-alert-banner">
+                    발표 직전 최종 점검 중... 이상한 부분이 있으면 찾아야 한다.
+                </div>
+
+                <div class="slide-workspace">
+                    <div class="workspace-label live">발표 자료 편집 화면</div>
+                    <div class="slide-frame">
+                        <div class="slide" id="game-slide"></div>
+                    </div>
+                </div>
+
+                <div class="nav-buttons" id="game-nav-buttons">
+                    <button id="prev">← 이전</button>
+                    <button id="next">다음 →</button>
+                </div>
+
+                <div class="action-buttons" id="game-action-buttons">
+                    <button id="detect" class="danger-btn">이상현상 발견</button>
+                    <button id="safe" class="primary-btn">문제 없음</button>
+                </div>
+            </main>
+        </div>
+
+        <div class="ppt-statusbar">
+            <span id="game-status-text">발표 자료 점검 중</span>
+            <span>오류 여부 확인 필요</span>
         </div>
     </div>
 

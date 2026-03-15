@@ -1,8 +1,9 @@
 :root {
   --top-bar-height: 78px;
   --content-padding: 16px;
-  --slide-width: min(720px, 88vw);
-  --slide-height: min(420px, 52vh);
+  --slide-width: min(720px, 60vw);
+  --slide-height: min(420px, 48vh);
+  --ppt-sidebar-width: 180px;
 }
 
 * {
@@ -139,35 +140,245 @@ body {
   margin-top: 14px;
 }
 
+/* PPT 화면 */
 #memory-screen.active,
 #game-screen.active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.ppt-window {
+  width: min(1320px, 100%);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #dbe2ea;
+  border: 1px solid #94a3b8;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+}
+
+.ppt-titlebar {
+  height: 48px;
+  background: #1e293b;
+  color: #e2e8f0;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 0 14px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+.ppt-title-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ppt-title-right {
+  justify-self: end;
+  font-size: 12px;
+  color: #cbd5e1;
+}
+
+.ppt-app-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #cbd5e1;
+  margin-left: 4px;
+}
+
+.ppt-file-name {
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  color: #f8fafc;
+}
+
+.ppt-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+.ppt-dot.red {
+  background: #ef4444;
+}
+
+.ppt-dot.yellow {
+  background: #f59e0b;
+}
+
+.ppt-dot.green {
+  background: #22c55e;
+}
+
+.ppt-ribbon {
+  height: 52px;
+  background: #f8fafc;
+  border-bottom: 1px solid #cbd5e1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  flex-wrap: wrap;
+}
+
+.ppt-tab {
+  padding: 8px 12px;
+  border-radius: 8px;
+  color: #334155;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.ppt-tab.active {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.ppt-editor {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  overflow: hidden;
+}
+
+.ppt-sidebar {
+  width: var(--ppt-sidebar-width);
+  background: #e2e8f0;
+  border-right: 1px solid #cbd5e1;
+  padding: 12px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ppt-sidebar-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: #334155;
+  padding: 0 4px;
+}
+
+.thumbnail-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.slide-thumb {
+  width: 100%;
+  min-height: 72px;
+  background: #ffffff;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  padding: 8px;
+  color: #0f172a;
+  box-shadow: 0 6px 12px rgba(15, 23, 42, 0.08);
+  cursor: pointer;
+}
+
+.slide-thumb.active {
+  border-color: #2563eb;
+  background: #eff6ff;
+}
+
+.slide-thumb-number {
+  font-size: 12px;
+  font-weight: 800;
+  color: #475569;
+  margin-bottom: 4px;
+}
+
+.slide-thumb-title {
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: #0f172a;
+}
+
+.slide-thumb-preview {
+  font-size: 11px;
+  color: #64748b;
+  margin-top: 4px;
+  line-height: 1.35;
+}
+
+.ppt-main {
+  flex: 1;
+  min-width: 0;
+  background: #cfd8e3;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 12px;
-  position: relative;
+  padding: 14px;
+  overflow: hidden;
 }
 
 .top-memory-text {
-  width: var(--slide-width);
+  width: min(860px, 100%);
   margin: 0;
   text-align: center;
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 700;
   color: #f8fafc;
-  background: rgba(37, 99, 235, 0.18);
-  border: 1px solid rgba(96, 165, 250, 0.4);
+  background: rgba(37, 99, 235, 0.85);
   border-radius: 12px;
   padding: 10px 14px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.22);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+}
+
+.game-alert-banner {
+  width: min(860px, 100%);
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: rgba(220, 38, 38, 0.92);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 800;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(127, 29, 29, 0.25);
+}
+
+.slide-workspace {
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.workspace-label {
+  margin-bottom: 10px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #475569;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.workspace-label.live {
+  background: #b91c1c;
 }
 
 .slide-frame {
   width: 100%;
   display: flex;
   justify-content: center;
-  flex: 0 0 auto;
+  align-items: center;
 }
 
 .slide {
@@ -175,11 +386,26 @@ body {
   height: var(--slide-height);
   background: #ffffff;
   color: #111827;
-  border-radius: 16px;
+  border-radius: 6px;
   padding: 22px;
   margin: 0 auto;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.4);
+  box-shadow:
+    0 0 0 1px rgba(15, 23, 42, 0.08),
+    0 18px 40px rgba(0, 0, 0, 0.28);
   overflow: hidden;
+}
+
+.ppt-statusbar {
+  height: 34px;
+  background: #f8fafc;
+  border-top: 1px solid #cbd5e1;
+  color: #475569;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 14px;
+  font-size: 12px;
+  font-weight: 700;
 }
 
 .cover {
@@ -258,7 +484,7 @@ body {
 
 .nav-buttons,
 .action-buttons {
-  margin-top: 10px;
+  margin-top: 6px;
   display: flex;
   gap: 10px;
   justify-content: center;
@@ -267,7 +493,7 @@ body {
 }
 
 .memory-controls {
-  width: var(--slide-width);
+  width: min(860px, 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -286,11 +512,15 @@ button {
   cursor: pointer;
   font-size: 15px;
   font-weight: 700;
-  transition: opacity 0.15s ease;
+  transition: opacity 0.15s ease, transform 0.12s ease;
 }
 
 button:hover {
   opacity: 0.92;
+}
+
+button:active {
+  transform: translateY(1px);
 }
 
 button:disabled {
@@ -322,14 +552,9 @@ button:disabled {
   margin: 0;
 }
 
-#game-play-area {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
+.danger-text {
+  color: #fecaca;
+  font-weight: 800;
 }
 
 /* 성공 컷신 상태 */
@@ -440,12 +665,21 @@ button:disabled {
   font-size: clamp(34px, 4vw, 48px);
 }
 
+@media (max-width: 1024px) {
+  :root {
+    --slide-width: min(680px, 62vw);
+    --slide-height: min(390px, 44vh);
+    --ppt-sidebar-width: 150px;
+  }
+}
+
 @media (max-width: 768px) {
   :root {
     --top-bar-height: 95px;
-    --content-padding: 12px;
+    --content-padding: 10px;
     --slide-width: min(92vw, 680px);
-    --slide-height: min(360px, 48vh);
+    --slide-height: min(330px, 42vh);
+    --ppt-sidebar-width: 112px;
   }
 
   .top-bar {
@@ -480,9 +714,56 @@ button:disabled {
     min-height: 90px;
   }
 
-  .top-memory-text {
-    font-size: 15px;
+  .ppt-titlebar {
+    grid-template-columns: auto 1fr;
+    gap: 8px;
+    height: 44px;
+  }
+
+  .ppt-file-name {
+    text-align: left;
+    font-size: 13px;
+  }
+
+  .ppt-title-right {
+    display: none;
+  }
+
+  .ppt-ribbon {
+    height: auto;
+    min-height: 44px;
+    padding: 6px 10px;
+    gap: 6px;
+  }
+
+  .ppt-tab {
+    font-size: 12px;
+    padding: 6px 8px;
+  }
+
+  .ppt-sidebar {
+    padding: 8px 6px;
+  }
+
+  .slide-thumb {
+    min-height: 62px;
+    padding: 6px;
+  }
+
+  .slide-thumb-title,
+  .slide-thumb-preview {
+    font-size: 10px;
+  }
+
+  .top-memory-text,
+  .game-alert-banner {
+    font-size: 14px;
     padding: 9px 12px;
+  }
+
+  .ppt-main {
+    padding: 10px;
+    gap: 10px;
   }
 
   .slide {
